@@ -44,6 +44,7 @@ bot.dialog('/profile', [
         session.send("Got it... " + session.userData.name + 
                     " you've been programming for " + session.userData.coding + 
                     " years and use " + session.userData.language + ".");
+        session.endDialog();
     }
 ]);
 
