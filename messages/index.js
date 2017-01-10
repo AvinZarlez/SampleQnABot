@@ -31,15 +31,15 @@ var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
 
 bot.dialog('/profile', [
     function (session) {
-        builder.Prompts.text(session, "Profile time!!! What's your name?");
+        builder.Prompts.text(session, "What's your name?");
     },
     function (session, results) {
         session.userData.name = results.response;
-        builder.Prompts.number(session, "Hola " + results.response + ", How many years have you been coding?");
+        builder.Prompts.number(session, "Hola " + results.response + "! How many years have you been coding?");
     },
     function (session, results) {
         session.userData.coding = results.response;
-        builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "CoffeeScript", "TypeScript"]);
+        builder.Prompts.choice(session, "What language do you code Node using?", ["JavaScript", "TypeScript", "Other"]);
     },
     function (session, results) {
         session.userData.language = results.response.entity;
@@ -56,7 +56,7 @@ bot.dialog('/', new builder.IntentDialog()
         session.beginDialog('/profile');
     })
     .onDefault(function (session) {
-        session.send("Checking the QnA Maker responce database:");
+        session.send("Checking the QnA Maker response database:");
         session.beginDialog('/qna');
         session.endDialog();
     }));
