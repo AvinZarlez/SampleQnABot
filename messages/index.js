@@ -59,7 +59,12 @@ bot.dialog('/', new builder.IntentDialog()
 }));
 
 
-bot.dialog('/qna', basicQnAMakerDialog);
+bot.dialog('/qna', [
+    basicQnAMakerDialog,
+    function (session) {
+        builder.Prompts.text(session, "End of Q and A");
+        session.endDialog();
+    }]);
 
 if (useEmulator) {
     var restify = require('restify');
