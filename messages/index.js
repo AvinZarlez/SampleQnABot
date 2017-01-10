@@ -55,7 +55,7 @@ bot.dialog('/', new builder.IntentDialog()
     })
     .onDefault(function (session) {
         session.send("Checking the QnA Maker responce database:");
-        session.beginDialog('/qna');
+        session.beginDialog(basicQnAMakerDialog);
 }));
 
 
