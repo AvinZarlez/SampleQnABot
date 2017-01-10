@@ -17,13 +17,15 @@ var connector = useEmulator ? new builder.ChatConnector() : new botbuilder_azure
 var bot = new builder.UniversalBot(connector);
 
 var recognizer = new builder_cognitiveservices.QnAMakerRecognizer({
-                knowledgeBaseId: process.env.QnAKnowledgebaseId, 
-    subscriptionKey: process.env.QnASubscriptionKey});
+    knowledgeBaseId: process.env.QnAKnowledgebaseId,
+    subscriptionKey: process.env.QnASubscriptionKey
+});
 
 var basicQnAMakerDialog = new builder_cognitiveservices.QnAMakerDialog({
     recognizers: [recognizer],
-                defaultMessage: 'No match! Try changing the query terms!',
-                qnaThreshold: 0.3}
+    defaultMessage: 'No match! Try changing the query terms!',
+    qnaThreshold: 0.3
+}
 );
 
 
@@ -33,7 +35,7 @@ bot.dialog('/profile', [
     },
     function (session, results) {
         session.userData.name = results.response;
-        builder.Prompts.number(session, "Hola " + results.response + ", How many years have you been coding?"); 
+        builder.Prompts.number(session, "Hola " + results.response + ", How many years have you been coding?");
     },
     function (session, results) {
         session.userData.coding = results.response;
@@ -41,9 +43,9 @@ bot.dialog('/profile', [
     },
     function (session, results) {
         session.userData.language = results.response.entity;
-        session.send("Got it... " + session.userData.name + 
-                    " you've been programming for " + session.userData.coding + 
-                    " years and use " + session.userData.language + ".");
+        session.send("Got it... " + session.userData.name +
+            " you've been programming for " + session.userData.coding +
+            " years and use " + session.userData.language + ".");
         session.endDialog();
     }
 ]);
@@ -55,24 +57,20 @@ bot.dialog('/', new builder.IntentDialog()
     })
     .onDefault(function (session) {
         session.send("Checking the QnA Maker responce database:");
-        session.beginDialog(basicQnAMakerDialog);
-}));
-
-
-bot.dialog('/qna', [
-    basicQnAMakerDialog,
-    function (session) {
-        builder.Prompts.text(session, "End of Q and A");
+        session.beginDialog('/qna');
         session.endDialog();
-    }]);
+    }));
+
+
+bot.dialog('/qna', basicQnAMakerDialog);
 
 if (useEmulator) {
     var restify = require('restify');
     var server = restify.createServer();
-    server.listen(3978, function() {
+    server.listen(3978, function () {
         console.log('test bot endpont at http://localhost:3978/api/messages');
     });
-    server.post('/api/messages', connector.listen());    
+    server.post('/api/messages', connector.listen());
 } else {
     module.exports = { default: connector.listen() }
 }
